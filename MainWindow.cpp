@@ -133,9 +133,11 @@ void MainWindow::setupUI()
     headerLayout->addStretch();
 
     m_networkButton = new QPushButton();
-    m_networkButton->setIcon(QIcon(":/CCTVMonitoringSystem/icons/NetworkConnect.png"));
+    //m_networkButton->setIcon(QIcon("C:\\Users\\2-09\\Documents\\0.Project\\CCTVMonitoringSystem\\icons\\NetworkConnect.png"));
+    m_networkButton->setIcon(QIcon(":/icons/NetworkConnect.png"));
     m_networkButton->setIconSize(QSize(24, 24));
-    m_networkButton->setStyleSheet("QPushButton { background-color: transparent; color: white; font-size: 20px; border: none; } QPushButton:hover { background-color: rgba(255,255,255,0.1); border-radius: 20px; }");
+    m_networkButton->setStyleSheet("QPushButton { background-color: transparent; color: white; font-size: 20px; border: none; } "
+                                   "QPushButton:hover { background-color: rgba(255,255,255,0.1); border-radius: 20px; }");
     connect(m_networkButton, &QPushButton::clicked, this, &MainWindow::onNetworkConfigClicked);
 
     headerLayout->addWidget(m_networkButton);
@@ -547,7 +549,6 @@ void MainWindow::sendSingleLineCoordinates(int x1, int y1, int x2, int y2)
         m_tcpCommunicator->sendLineCoordinates(x1, y1, x2, y2);
         qDebug() << "기준선 좌표 전송 성공:" << x1 << y1 << x2 << y2;
 
-        QMessageBox::information(this, "전송 완료", "기준선 좌표가 서버로 전송되었습니다.");
     } else {
         qDebug() << "TCP 연결이 없어 좌표 전송 실패";
         QMessageBox::warning(this, "전송 실패", "서버에 연결되어 있지 않습니다.");

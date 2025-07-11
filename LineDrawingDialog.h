@@ -4,26 +4,31 @@
 #include <QDialog>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QGridLayout>
 #include <QPushButton>
 #include <QLabel>
 #include <QVideoWidget>
 #include <QMediaPlayer>
 #include <QAudioOutput>
+#include <QSlider>
 #include <QTimer>
 #include <QMouseEvent>
 #include <QPaintEvent>
 #include <QPainter>
+#include <QPoint>
 #include <QList>
 #include <QPair>
-#include <QPoint>
+#include <QTextEdit>
+#include <QTime>
+#include <QResizeEvent>
 
+// 비디오 오버레이 위젯 (선 그리기용)
 class VideoOverlayWidget : public QWidget
 {
     Q_OBJECT
 
 public:
     explicit VideoOverlayWidget(QWidget *parent = nullptr);
-
     void setDrawingMode(bool enabled);
     void clearLines();
     QList<QPair<QPoint, QPoint>> getLines() const;
@@ -32,10 +37,10 @@ signals:
     void lineDrawn(const QPoint &start, const QPoint &end);
 
 protected:
-    void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
 
 private:
     bool m_drawingMode;
@@ -62,45 +67,52 @@ private slots:
     void onClearLinesClicked();
     void onSendCoordinatesClicked();
     void onLineDrawn(const QPoint &start, const QPoint &end);
+    void onClearLogClicked();
     void onPlayerStateChanged(QMediaPlayer::PlaybackState state);
     void onPlayerError(QMediaPlayer::Error error, const QString &errorString);
     void onMediaStatusChanged(QMediaPlayer::MediaStatus status);
     void updateFrameCount();
-    void updateButtonStates();
+
+protected:
+    void resizeEvent(QResizeEvent *event) override;
 
 private:
     void setupUI();
     void setupMediaPlayer();
     void startVideoStream();
     void stopVideoStream();
+    void addLogMessage(const QString &message, const QString &type = "INFO");
+    void clearLog();
+    void updateButtonStates();
 
-    // UI 컴포넌트
+    // UI 컴포넌트 (헤더 선언 순서대로 정렬)
     QVBoxLayout *m_mainLayout;
     QHBoxLayout *m_buttonLayout;
     QVideoWidget *m_videoWidget;
     VideoOverlayWidget *m_overlayWidget;
-
     QPushButton *m_startDrawingButton;
     QPushButton *m_stopDrawingButton;
     QPushButton *m_clearLinesButton;
     QPushButton *m_sendCoordinatesButton;
     QPushButton *m_closeButton;
-
     QLabel *m_statusLabel;
     QLabel *m_frameCountLabel;
+
+    // 로그 관련 UI
+    QTextEdit *m_logTextEdit;
+    QLabel *m_logCountLabel;
+    QPushButton *m_clearLogButton;
 
     // 미디어 관련
     QMediaPlayer *m_mediaPlayer;
     QAudioOutput *m_audioOutput;
-    QString m_rtspUrl;
 
     // 상태 관리
+    QString m_rtspUrl;
+    QList<QPair<QPoint, QPoint>> m_drawnLines;
     bool m_isDrawingMode;
     QTimer *m_frameTimer;
     int m_frameCount;
-
-    // 그려진 선들
-    QList<QPair<QPoint, QPoint>> m_drawnLines;
 };
 
 #endif // LINEDRAWINGDIALOG_H

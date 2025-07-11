@@ -78,7 +78,6 @@ void NetworkConfigDialog::setupUI()
                             "QPushButton[text='OK']:hover { background-color: #45a049; } "
                             "QPushButton[text='Cancel'] { background-color: #f44336; color: white; } "
                             "QPushButton[text='Cancel']:hover { background-color: #d32f2f; }");
-    
     connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
     
